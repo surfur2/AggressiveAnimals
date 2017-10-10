@@ -11,6 +11,23 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1658459206159868}
   m_IsPrefabParent: 1
+--- !u!1 &1255116797803220
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4122192665162660}
+  - component: {fileID: 23085252454870396}
+  - component: {fileID: 102346430549340662}
+  m_Layer: 0
+  m_Name: BotNumber
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1658459206159868
 GameObject:
   m_ObjectHideFlags: 0
@@ -22,6 +39,7 @@ GameObject:
   - component: {fileID: 114120718168104030}
   - component: {fileID: 114275442146545996}
   - component: {fileID: 114433338628516060}
+  - component: {fileID: 114510160555925292}
   - component: {fileID: 114124211242074334}
   - component: {fileID: 114177368081768132}
   - component: {fileID: 114309414632575462}
@@ -35,6 +53,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &4122192665162660
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1255116797803220}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.0029, y: 0.0054, z: -1}
+  m_LocalScale: {x: 0.001, y: 0.001, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4808305351267398}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4808305351267398
 Transform:
   m_ObjectHideFlags: 1
@@ -44,10 +75,43 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 10.52, y: 10.26, z: 0}
   m_LocalScale: {x: 30, y: 30, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4122192665162660}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &23085252454870396
+MeshRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1255116797803220}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_Materials:
+  - {fileID: 10100, guid: 0000000000000000e000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!50 &50613184970790184
 Rigidbody2D:
   serializedVersion: 4
@@ -93,6 +157,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.01, y: 0.01}
   m_EdgeRadius: 0
+--- !u!102 &102346430549340662
+TextMesh:
+  serializedVersion: 3
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1255116797803220}
+  m_Text: 1
+  m_OffsetZ: 0
+  m_CharacterSize: 1
+  m_LineSpacing: 1
+  m_Anchor: 0
+  m_Alignment: 0
+  m_TabSize: 4
+  m_FontSize: 100
+  m_FontStyle: 0
+  m_RichText: 1
+  m_Font: {fileID: 0}
+  m_Color:
+    serializedVersion: 2
+    rgba: 4278321666
 --- !u!114 &114120718168104030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -115,12 +200,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d114dd95c1adae3448edb9afab766260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0
+  headingCalcDelay: 0.1
   isInhibited: 0
   level: 3
   subsumedBehaviors: []
   inhibitaedBehaviors:
   - {fileID: 114433338628516060}
+  - {fileID: 114510160555925292}
   slowingDistance: 1
   timePredictor: 0.35
 --- !u!114 &114177368081768132
@@ -141,8 +227,9 @@ MonoBehaviour:
   inhibitaedBehaviors: []
   radiusForAttack: 0.5
   attackCooldown: 1.5
-  attackDamage: 10
-  chanceToHit: 0.75
+  minAttackDamage: 5
+  maxAttackDamage: 20
+  chanceToHit: 1
 --- !u!114 &114275442146545996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -154,26 +241,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14b5d4364d8baf4fa5ccc88fa2d28b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capUpdateCycle: 0
-  radiusForAggression: 2
-  startingHp: 40
+  capUpdateCycle: 0.1
+  botNumber: 1
+  radiusForAggression: 3
+  fleeRadius: 4
+  startingHp: 50
+  percentHealthToFlee: 0.2
+  percentHealthToAttack: 0.7
+  damageColor: {r: 0.99264705, g: 0.014597764, b: 0.07530425, a: 1}
+  healColor: {r: 0.035953693, g: 0.8220259, b: 0.97794116, a: 1}
 --- !u!114 &114309414632575462
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1658459206159868}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3f94b391df6fb74990f2c678db599bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0
+  headingCalcDelay: 0.1
   isInhibited: 0
-  level: 0
+  level: 4
   subsumedBehaviors: []
-  inhibitaedBehaviors: []
-  fleeTarget: {fileID: 0}
+  inhibitaedBehaviors:
+  - {fileID: 114124211242074334}
+  - {fileID: 114433338628516060}
+  - {fileID: 114510160555925292}
 --- !u!114 &114433338628516060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -185,12 +280,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ff2e56704fe9104394d6079f62245a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0
+  headingCalcDelay: 0.1
   isInhibited: 0
   level: 1
   subsumedBehaviors: []
   inhibitaedBehaviors: []
   slowingDistance: 2
+--- !u!114 &114510160555925292
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1658459206159868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7156f1e2ceac1544885fbaac3cdbbb92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 2
+  subsumedBehaviors: []
+  inhibitaedBehaviors: []
+  radiusForEating: 0.2
+  eatCooldown: 2
 --- !u!212 &212299317125218526
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -224,7 +337,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4cc1c068d1214164884e99d58d9be536, type: 3}
-  m_Color: {r: 0.9632353, g: 0.04957828, b: 0.04957828, a: 1}
+  m_Color: {r: 0.0810836, g: 0.9632353, b: 0.04957822, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

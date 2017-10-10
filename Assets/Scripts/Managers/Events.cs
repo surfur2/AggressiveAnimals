@@ -10,3 +10,14 @@ public class AnimalDied : UnityEvent<GameObject>
 
 }
 
+[System.Serializable]
+public class AnimalHealthChange : UnityEvent<int, float>
+{
+
+}
+
+[System.Serializable]
+public class ResourceDepleted : UnityEvent<GameObject>
+{
+
+}

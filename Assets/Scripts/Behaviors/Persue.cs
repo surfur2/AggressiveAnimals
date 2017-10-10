@@ -29,8 +29,11 @@ public class Persue : BehaviorBase {
         }
     }
 
-    public void SetTarget(Rigidbody2D _target)
+    public void SetTarget(GameObject _target)
     {
-        target = _target;
+        target = null;
+
+        if (_target != null)
+            target = _target.GetComponent<Rigidbody2D>();
     }
 }

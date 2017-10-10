@@ -8,6 +8,10 @@ public class EventManager : MonoBehaviour {
 
     [HideInInspector]
     public AnimalDied animalDied;
+    [HideInInspector]
+    public AnimalHealthChange animalHealthChange;
+    [HideInInspector]
+    public ResourceDepleted resourceDepleted;
 
     // Use this for initialization
     void Awake()
@@ -22,5 +26,7 @@ public class EventManager : MonoBehaviour {
         }
 
         animalDied = new AnimalDied();
+        animalHealthChange = new AnimalHealthChange();
+        resourceDepleted = new ResourceDepleted();
     }
 }

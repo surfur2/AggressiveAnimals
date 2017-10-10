@@ -18,8 +18,11 @@ public class Arrival : BehaviorBase {
         }
     }
 
-    public void SetTarget(Transform _target)
+    public void SetTarget(Resource _target)
     {
-        target = _target;
+        target = null;
+
+        if (_target != null)
+            target = _target.transform;
     }
 }

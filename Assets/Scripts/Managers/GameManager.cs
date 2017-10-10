@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour {
     public static GameManager instance;
 
     [SerializeField]
-    private GameObject[] resources;
+    private List<GameObject> resources;
     [SerializeField]
     private List<GameObject> animals;
 
@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour {
         }
 
         EventManager.instance.animalDied.AddListener(AnimalDied);
+        EventManager.instance.resourceDepleted.AddListener(ResourceDepleted);
     }
 
     public GameObject FindClosestResource(Vector3 positionToCalculate)
@@ -65,5 +66,11 @@ public class GameManager : MonoBehaviour {
     {
         animals.Remove(animal);
         Destroy(animal);
+    }
+
+    private void ResourceDepleted (GameObject resource)
+    {
+        resources.Remove(resource);
+        Destroy(resource);
     }
 }

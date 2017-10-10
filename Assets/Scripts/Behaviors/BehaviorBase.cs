@@ -11,6 +11,7 @@ public abstract class BehaviorBase : MonoBehaviour {
     protected Vector3 desiredSteeringHeading;
 
     protected Rigidbody2D myRigidBody;
+    protected BotSensorySystem mySensorSystem;
 
     [HideInInspector]
     public bool isInhibited;
@@ -21,6 +22,7 @@ public abstract class BehaviorBase : MonoBehaviour {
     private void Start()
     {
         myRigidBody = GetComponent<Rigidbody2D>();
+        mySensorSystem = GetComponent<BotSensorySystem>();
         timeToNextCalc = 0.0f;
         isInhibited = false;
     }

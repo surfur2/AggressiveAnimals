@@ -8,7 +8,8 @@ public class Attack : BehaviorBase {
 
     public float radiusForAttack;
     public float attackCooldown;
-    public int attackDamage;
+    public int minAttackDamage;
+    public int maxAttackDamage;
     public float chanceToHit;
     private float lastAttack;
 
@@ -30,16 +31,19 @@ public class Attack : BehaviorBase {
         }
     }
 
-    public void SetTarget(BotSensorySystem _target)
+    public void SetTarget(GameObject _target)
     {
-        target = _target;
+        target = null;
+
+        if (_target != null)
+            target = _target.GetComponent<BotSensorySystem>();
     }
 
     private void AttackEnemy()
     {
         if (Random.Range(0, 101) < chanceToHit * 100)
         {
-            target.TakeDamage(attackDamage);
+            target.TakeDamage(Random.Range(minAttackDamage, maxAttackDamage + 1));
         }
         lastAttack = attackCooldown;
     }
