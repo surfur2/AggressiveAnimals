@@ -12,21 +12,31 @@ public abstract class BehaviorBase : MonoBehaviour {
 
     protected Rigidbody2D myRigidBody;
 
+    [HideInInspector]
+    public bool isInhibited;
+    public int level;
+    public List<BehaviorBase> subsumedBehaviors;
+    public List<BehaviorBase> inhibitaedBehaviors;
+
     private void Start()
     {
         myRigidBody = GetComponent<Rigidbody2D>();
         timeToNextCalc = 0.0f;
+        isInhibited = false;
     }
 
     private void Update()
     {
-        if (timeToNextCalc <= 0.0f)
+        if (!isInhibited)
         {
-            CalculateHeading();
-            timeToNextCalc = headingCalcDelay;
-        }
+            if (timeToNextCalc <= 0.0f)
+            {
+                CalculateBehavior();
+                timeToNextCalc = headingCalcDelay;
+            }
 
-        timeToNextCalc -= Time.deltaTime;
+            timeToNextCalc -= Time.deltaTime;
+        }
     }
 
     public Vector3 GetBehaviorHeading()
@@ -34,5 +44,28 @@ public abstract class BehaviorBase : MonoBehaviour {
         return desiredSteeringHeading;
     }
 
-    protected abstract void CalculateHeading();
+    public void SubsumeLowerBehaviors()
+    {
+
+    }
+
+    // Block any heading calculations from lower behaviors
+    public void InhibitLowerBehaviors()
+    {
+        foreach (BehaviorBase behavior in inhibitaedBehaviors)
+        {
+            behavior.isInhibited = true;
+        }
+    }
+
+    // Resume heading calculations for lower behaviors.
+    public void ResumeLowerBehaviors()
+    {
+        foreach (BehaviorBase behavior in inhibitaedBehaviors)
+        {
+            behavior.isInhibited = false;
+        }
+    }
+
+    protected abstract void CalculateBehavior();
 }

@@ -19,13 +19,15 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4808305351267398}
-  - component: {fileID: 114275442146545996}
   - component: {fileID: 114120718168104030}
+  - component: {fileID: 114275442146545996}
   - component: {fileID: 114433338628516060}
   - component: {fileID: 114124211242074334}
+  - component: {fileID: 114177368081768132}
   - component: {fileID: 114309414632575462}
   - component: {fileID: 50613184970790184}
   - component: {fileID: 212299317125218526}
+  - component: {fileID: 61623270887032240}
   m_Layer: 0
   m_Name: AnimalBot
   m_TagString: Untagged
@@ -39,8 +41,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1658459206159868}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 3.2, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 10.52, y: 10.26, z: 0}
   m_LocalScale: {x: 30, y: 30, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -66,6 +68,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &61623270887032240
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1658459206159868}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.01, y: 0.01}
+    newSize: {x: 0.01, y: 0.01}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.01, y: 0.01}
+  m_EdgeRadius: 0
 --- !u!114 &114120718168104030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -88,10 +115,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d114dd95c1adae3448edb9afab766260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0.1
-  seekTarget: {fileID: 0}
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 3
+  subsumedBehaviors: []
+  inhibitaedBehaviors:
+  - {fileID: 114433338628516060}
   slowingDistance: 1
   timePredictor: 0.35
+--- !u!114 &114177368081768132
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1658459206159868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f530444fb3ce24b92c88759e5e70a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 3
+  subsumedBehaviors: []
+  inhibitaedBehaviors: []
+  radiusForAttack: 0.5
+  attackCooldown: 1.5
+  attackDamage: 10
+  chanceToHit: 0.75
 --- !u!114 &114275442146545996
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -103,7 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14b5d4364d8baf4fa5ccc88fa2d28b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentTarget: {fileID: 0}
+  capUpdateCycle: 0
+  radiusForAggression: 2
+  startingHp: 40
 --- !u!114 &114309414632575462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -115,7 +168,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3f94b391df6fb74990f2c678db599bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0.1
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 0
+  subsumedBehaviors: []
+  inhibitaedBehaviors: []
   fleeTarget: {fileID: 0}
 --- !u!114 &114433338628516060
 MonoBehaviour:
@@ -123,13 +180,16 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1658459206159868}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ff2e56704fe9104394d6079f62245a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headingCalcDelay: 0.1
-  seekTarget: {fileID: 0}
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 1
+  subsumedBehaviors: []
+  inhibitaedBehaviors: []
   slowingDistance: 2
 --- !u!212 &212299317125218526
 SpriteRenderer:

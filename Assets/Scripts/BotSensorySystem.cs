@@ -4,48 +4,134 @@ using UnityEngine;
 
 public class BotSensorySystem : MonoBehaviour {
 
-    public Transform currentTarget;
+    // Cap how often we are updating behavior
+    public float capUpdateCycle;
+    private float timerToNextUpdateCycle;
 
-    private BotController botActuators;
+    // Values for determining behaviors
+    public float radiusForAggression;
+    public int startingHp;
+
+    // State of the animal
+    private Transform currentResourcePersued;
+    private Rigidbody2D currentEnemyPersued;
+    private int currentHp;
 
     // Behaviors
-    private Arrival arivalBehavior;
+    private Arrival arrivalBehavior;
     private Flee fleeBehavior;
     private Persue persueBehavior;
+    private Attack attackBehavior;
+
+    // Controller for applying force to the bot
+    private BotController botActuators;
 
     // The one true heading we will send to the bot controller
     private Vector3 heading;
 
     private void Start()
     {
-        arivalBehavior = gameObject.GetComponent<Arrival>();
+        arrivalBehavior = gameObject.GetComponent<Arrival>();
         fleeBehavior = gameObject.GetComponent<Flee>();
         persueBehavior = gameObject.GetComponent<Persue>();
+        attackBehavior = gameObject.GetComponent<Attack>();
+
         botActuators = gameObject.GetComponent<BotController>();
         heading = new Vector3(0.0f, 0.0f, 0.0f);
+        timerToNextUpdateCycle = 0.0f;
+        currentHp = startingHp;
     }
 
     private void Update()
     {
-        DetermineSubsumptionBehavior();
-
-        botActuators.SetHeading(heading);
+        if (timerToNextUpdateCycle <= 0.0f)
+        {
+            DetermineSubsumptionBehavior();
+            botActuators.SetHeading(heading);
+        }
+        else
+        {
+            timerToNextUpdateCycle -= Time.deltaTime;
+        }
     }
 
     private void DetermineSubsumptionBehavior()
     {
-       if (arivalBehavior.isActiveAndEnabled)
+        // Level 3 -> Flee from enemies when at low hp
+
+        // Level 2 -> Persue enemies and be aggresive
+        if (!persueBehavior.isInhibited)
         {
-            heading = arivalBehavior.GetBehaviorHeading();
+            var newTarget = FindClosestEnemyToResource(currentResourcePersued);
+            if (currentEnemyPersued != newTarget)
+            {
+                currentEnemyPersued = newTarget;
+                persueBehavior.SetTarget(currentEnemyPersued);
+                persueBehavior.ResumeLowerBehaviors();
+
+                attackBehavior.SetTarget(currentEnemyPersued.GetComponent<BotSensorySystem>());
+            }
+
+            if (currentEnemyPersued != null && WithinRadiusOfFood(transform.position) && WithinRadiusOfFood(currentEnemyPersued.position))
+            {
+                persueBehavior.InhibitLowerBehaviors();
+                heading = persueBehavior.GetBehaviorHeading();
+            }
+            else
+            {
+                persueBehavior.ResumeLowerBehaviors();
+            }
         }
-       else if (fleeBehavior.isActiveAndEnabled)
+
+        // Level 1 -> Seek food
+        if (!arrivalBehavior.isInhibited)
         {
-            heading = fleeBehavior.GetBehaviorHeading();
+            currentResourcePersued = FindNearestFood();
+            arrivalBehavior.SetTarget(currentResourcePersued);
+            heading = arrivalBehavior.GetBehaviorHeading();
         }
-        else if (persueBehavior.isActiveAndEnabled)
-        {
-            heading = persueBehavior.GetBehaviorHeading();
-        }
+
+      
+        // Level 0 -> Avoid obstacles
+
     }
 
+    private Transform FindNearestFood()
+    {
+        return GameManager.instance.FindClosestResource(transform.position).transform;
+    }
+
+    private Rigidbody2D FindClosestEnemyToResource(Transform currentResourcePersued)
+    {
+        Rigidbody2D closestEnemyRB2D = null;
+        if (currentResourcePersued != null)
+        {
+            var closestEnemy = GameManager.instance.FindClosestEnemyToResource(currentResourcePersued, gameObject);
+            if (closestEnemy != null)
+                closestEnemyRB2D = closestEnemy.GetComponent<Rigidbody2D>();
+        }
+
+        return closestEnemyRB2D;
+    }
+
+    private bool WithinRadiusOfFood(Vector3 positionWithinRadius)
+    {
+        if (positionWithinRadius != null && currentResourcePersued != null)
+        {
+            return (positionWithinRadius - currentResourcePersued.position).magnitude < radiusForAggression ? true : false;
+        }
+
+        return false;
+    }
+
+    public void TakeDamage (int damage)
+    {
+        currentHp -= damage;
+
+        if (currentHp <= 0)
+        {
+            EventManager.instance.animalDied.Invoke(gameObject);
+            this.enabled = false;
+        }
+    }
 }

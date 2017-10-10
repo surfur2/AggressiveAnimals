@@ -6,7 +6,7 @@ public class Flee : BehaviorBase {
 
     public Transform fleeTarget;
 
-    protected override void CalculateHeading()
+    protected override void CalculateBehavior()
     {
         var desiredVelocity = (gameObject.transform.position - fleeTarget.position).normalized * BotController.maxSpeed;
         desiredSteeringHeading = desiredVelocity - new Vector3(myRigidBody.velocity.x, myRigidBody.velocity.y, 0.0f);

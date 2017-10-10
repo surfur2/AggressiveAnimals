@@ -8,21 +8,29 @@ using UnityEngine;
 /// </summary>
 public class Persue : BehaviorBase {
 
-    public Rigidbody2D seekTarget;
+    private Rigidbody2D target;
     public float slowingDistance;
     // Hard codded value used to determine how far in the distance we are predicting for the target.
     public float timePredictor;
 
-    protected override void CalculateHeading()
+    protected override void CalculateBehavior()
     {
-        var currentDistanceFromTarget = (seekTarget.transform.position - gameObject.transform.position).magnitude;
-        var predictedDistanceTraveled = new Vector3(seekTarget.velocity.x, seekTarget.velocity.y, 0.0f) * (timePredictor * currentDistanceFromTarget);
-        var futurePositionForTarget = seekTarget.transform.position + predictedDistanceTraveled;
+        if (target != null)
+        {
+            var currentDistanceFromTarget = (target.transform.position - gameObject.transform.position).magnitude;
+            var predictedDistanceTraveled = new Vector3(target.velocity.x, target.velocity.y, 0.0f) * (timePredictor * currentDistanceFromTarget);
+            var futurePositionForTarget = target.transform.position + predictedDistanceTraveled;
 
-        var targetOffset = futurePositionForTarget - gameObject.transform.position;
-        var rampedSpeed = (targetOffset.magnitude / slowingDistance) * BotController.maxSpeed;
-        var desiredVelocity = Mathf.Min(rampedSpeed, BotController.maxSpeed) * targetOffset;
+            var targetOffset = futurePositionForTarget - gameObject.transform.position;
+            var rampedSpeed = (targetOffset.magnitude / slowingDistance) * BotController.maxSpeed;
+            var desiredVelocity = Mathf.Min(rampedSpeed, BotController.maxSpeed) * targetOffset;
 
-        desiredSteeringHeading = desiredVelocity - new Vector3(myRigidBody.velocity.x, myRigidBody.velocity.y, 0.0f);
+            desiredSteeringHeading = desiredVelocity - new Vector3(myRigidBody.velocity.x, myRigidBody.velocity.y, 0.0f);
+        }
+    }
+
+    public void SetTarget(Rigidbody2D _target)
+    {
+        target = _target;
     }
 }

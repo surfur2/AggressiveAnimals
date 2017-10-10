@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class EventManager : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public static EventManager instance;
+
+    [HideInInspector]
+    public AnimalDied animalDied;
+
+    // Use this for initialization
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
+        animalDied = new AnimalDied();
+    }
 }
