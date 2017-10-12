@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class BotSensorySystem : MonoBehaviour {
 
+    struct ObstacleDistance
+    {
+        public GameObject obstacle;
+        public float distance;
+
+        public ObstacleDistance(GameObject _obstacle, float _distance)
+        {
+            obstacle = _obstacle;
+            distance = _distance;
+        }
+    }
+
     // Cap how often we are updating behavior
     public float capUpdateCycle;
     private float timerToNextUpdateCycle;
@@ -23,6 +35,8 @@ public class BotSensorySystem : MonoBehaviour {
     private Resource currentResourcePersued;
     private GameObject currentEnemyPersued;
     private Transform currentEnemyFleeing;
+    private Transform currentClosestObstacle;
+    private List<GameObject> obstaclesInFrontOfPlayer = new List<GameObject>();
 
     private int currentHp;
     public Color damageColor;
@@ -32,10 +46,11 @@ public class BotSensorySystem : MonoBehaviour {
 
     // Behaviors
     private Arrival arrivalBehavior;
-    private Flee fleeBehavior;
     private Persue persueBehavior;
     private Attack attackBehavior;
     private Eat eatBehavior;
+    public Flee fleeEnemyBehavior;
+    public Flee avoidObstacleBehavior;
 
     // Controller for applying force to the bot
     private BotController botActuators;
@@ -49,7 +64,6 @@ public class BotSensorySystem : MonoBehaviour {
     private void Start()
     {
         arrivalBehavior = gameObject.GetComponent<Arrival>();
-        fleeBehavior = gameObject.GetComponent<Flee>();
         persueBehavior = gameObject.GetComponent<Persue>();
         attackBehavior = gameObject.GetComponent<Attack>();
         eatBehavior = gameObject.GetComponent<Eat>();
@@ -83,36 +97,50 @@ public class BotSensorySystem : MonoBehaviour {
     private void DetermineSubsumptionBehavior()
     {
         // Level 4 -> Flee from enemies when at low hp
-        if (!fleeBehavior.isInhibited)
+        if (!fleeEnemyBehavior.isInhibited)
         {
             if (isScared)
             {
-                currentEnemyFleeing = FindClosestEnemy();
-                fleeBehavior.SetTarget(currentEnemyFleeing);
+                var closestEnemy = FindClosestEnemy();
+                currentEnemyFleeing = closestEnemy == null ? null : closestEnemy.transform;
+
+                fleeEnemyBehavior.SetTarget(currentEnemyFleeing);
 
                 // We are scared and activly fleeing
                 if (currentEnemyFleeing != null && WithinFleeRadius(currentEnemyFleeing.position))
                 {
-                    fleeBehavior.InhibitLowerBehaviors();
-                    heading = fleeBehavior.GetBehaviorHeading();
+                    fleeEnemyBehavior.InhibitLowerBehaviors();
+                    heading = fleeEnemyBehavior.GetBehaviorHeading();
                 }
                 // We are scared but not activly fleeing
                 else
                 {
-                    fleeBehavior.ResumeLowerBehaviors();
+                    fleeEnemyBehavior.ResumeLowerBehaviors();
                 }
             }
             // We are no longer scared
             else
             {
-                fleeBehavior.ResumeLowerBehaviors();
+                fleeEnemyBehavior.ResumeLowerBehaviors();
             }
         }
 
         // Level 3 -> Persue enemies, be aggresive, and attack.
         if (!persueBehavior.isInhibited)
         {
-            var newTarget = FindClosestEnemyToResource(currentResourcePersued);
+            GameObject newTarget = null;
+            // Resources have depleted.
+            if (currentResourcePersued == null)
+            {
+                newTarget = FindClosestEnemy();
+            }
+            // Find the closes enemy to our resource.
+            else
+            {
+                newTarget = FindClosestEnemyToResource(currentResourcePersued);
+            }
+
+            // Only set new target if it is not the same as old target
             if (currentEnemyPersued != newTarget)
             {
                 currentEnemyPersued = newTarget;
@@ -132,7 +160,7 @@ public class BotSensorySystem : MonoBehaviour {
             }
         }
 
-        // Level 2 -> Eat food if it is in radius.
+        // Level 1 -> Eat food if it is in radius.
         if (!eatBehavior.isInhibited)
         {
             eatBehavior.SetTarget(currentResourcePersued);
@@ -148,7 +176,16 @@ public class BotSensorySystem : MonoBehaviour {
 
       
         // Level 0 -> Avoid obstacles
+       if (!avoidObstacleBehavior.isInhibited)
+        {
+            var currentObstacle = FindClosestObstacle();
+            avoidObstacleBehavior.SetTarget(currentObstacle);
 
+            if (currentObstacle != null)
+            {
+                heading = avoidObstacleBehavior.GetBehaviorHeading();
+            }
+        }
     }
 
     private Resource FindNearestFood()
@@ -160,15 +197,9 @@ public class BotSensorySystem : MonoBehaviour {
         return null;
     }
 
-    private Transform FindClosestEnemy()
+    private GameObject FindClosestEnemy()
     {
-        var closestEnemy = GameManager.instance.FindClosestEnemyToResource(transform, gameObject);
-        if (closestEnemy != null)
-        {
-            return closestEnemy.transform;
-        }
-
-        return null;
+        return GameManager.instance.FindClosestEnemyToResource(transform, gameObject);
     }
 
     private GameObject FindClosestEnemyToResource(Resource currentResourcePersued)
@@ -190,6 +221,25 @@ public class BotSensorySystem : MonoBehaviour {
     private bool WithinFleeRadius (Vector3 positionWithinRadius)
     {
         return (positionWithinRadius - transform.position).magnitude < fleeRadius ? true : false;
+    }
+
+    private Transform FindClosestObstacle ()
+    {
+        float minDistance = 100.0f;
+        Transform minTransform = null;
+        for (int i = 0; i < obstaclesInFrontOfPlayer.Count; i++)
+        {
+            var obstacle = obstaclesInFrontOfPlayer[i];
+            var distance = (transform.position - obstacle.transform.position).magnitude;
+                
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                minTransform = obstacle.transform;
+            }
+        }
+
+        return minTransform;
     }
 
     public void TakeDamage (int damage)
@@ -224,6 +274,20 @@ public class BotSensorySystem : MonoBehaviour {
         {
             isScared = false;
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "obstacle")
+            if (!obstaclesInFrontOfPlayer.Contains(other.gameObject))
+                obstaclesInFrontOfPlayer.Add(other.gameObject);
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag == "obstacle")
+            if (obstaclesInFrontOfPlayer.Contains(other.gameObject))
+                obstaclesInFrontOfPlayer.Remove(other.gameObject);
     }
 
     private IEnumerator FlashDamage()

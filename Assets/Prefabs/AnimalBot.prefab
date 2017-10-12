@@ -43,9 +43,11 @@ GameObject:
   - component: {fileID: 114124211242074334}
   - component: {fileID: 114177368081768132}
   - component: {fileID: 114309414632575462}
+  - component: {fileID: 114611128481564968}
   - component: {fileID: 50613184970790184}
   - component: {fileID: 212299317125218526}
   - component: {fileID: 61623270887032240}
+  - component: {fileID: 61223504470566180}
   m_Layer: 0
   m_Name: AnimalBot
   m_TagString: Untagged
@@ -132,6 +134,31 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!61 &61223504470566180
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1658459206159868}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 9.313226e-10, y: 0.012868911}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.01, y: 0.01}
+    newSize: {x: 0.01, y: 0.01}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.012442693, y: 0.01619624}
+  m_EdgeRadius: 0
 --- !u!61 &61623270887032240
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -250,6 +277,8 @@ MonoBehaviour:
   percentHealthToAttack: 0.7
   damageColor: {r: 0.99264705, g: 0.014597764, b: 0.07530425, a: 1}
   healColor: {r: 0.035953693, g: 0.8220259, b: 0.97794116, a: 1}
+  fleeEnemyBehavior: {fileID: 114309414632575462}
+  avoidObstacleBehavior: {fileID: 114611128481564968}
 --- !u!114 &114309414632575462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -304,6 +333,22 @@ MonoBehaviour:
   inhibitaedBehaviors: []
   radiusForEating: 0.2
   eatCooldown: 2
+--- !u!114 &114611128481564968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1658459206159868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3f94b391df6fb74990f2c678db599bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  headingCalcDelay: 0
+  isInhibited: 0
+  level: 0
+  subsumedBehaviors: []
+  inhibitaedBehaviors: []
 --- !u!212 &212299317125218526
 SpriteRenderer:
   m_ObjectHideFlags: 1

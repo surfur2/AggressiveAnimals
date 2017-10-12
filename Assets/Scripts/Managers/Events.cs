@@ -21,3 +21,15 @@ public class ResourceDepleted : UnityEvent<GameObject>
 {
 
 }
+
+[System.Serializable]
+public class PlayerEnterObstacle : UnityEvent<int, GameObject>
+{
+
+}
+
+[System.Serializable]
+public class PlayerExitObstacle : UnityEvent<int, GameObject>
+{
+
+}

@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class HealthBar : MonoBehaviour {
 
-    private float percentRemaining;
-
     [SerializeField]
     private Transform healthRemaing;
     [SerializeField]
@@ -25,9 +23,10 @@ public class HealthBar : MonoBehaviour {
     {
         if (_animalNumber == animalNumber)
         {
-            percentRemaining = percentHealth;
+            if (percentHealth <= 0.0f)
+                percentHealth = 0.0f;
 
-            healthRemaing.localScale = new Vector3(percentRemaining * initialSize, healthRemaing.localScale.y, healthRemaing.localScale.z);
+            healthRemaing.localScale = new Vector3(percentHealth * initialSize, healthRemaing.localScale.y, healthRemaing.localScale.z);
 
         }
     }
